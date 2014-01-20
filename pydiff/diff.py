@@ -18,7 +18,7 @@ def rundiff(left, right, f):
     joined output of the diffing function.
 
     """
-    diffed = ''.join(f(left, right))
+    diffed = '\n'.join(f(left.splitlines(), right.splitlines()))
     if diffed:
         return {'same': False, 'output': diffed}
     else:
