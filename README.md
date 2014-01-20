@@ -3,6 +3,8 @@
 Pydiff is a little webservice for diffing strings! It is dead simple. There is
 no UI or front-facing interface. It is simply an API with one endpoint.
 
+I have a copy hosted at http://pydiff.raynes.me/.
+
 ## Usage
 
 Get dependencies by doing this:
