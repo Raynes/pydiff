@@ -1,10 +1,13 @@
-from flask import Response, request
-from pydiff.diff import difftexts
+import json
+import flask
 from pydiff import app
-from json import loads, dumps
+import pydiff.diff as diff
+
 
 @app.route('/diff', methods=['POST'])
 def post_diff():
-    texts = loads(request.get_data(as_text=True))
-    diff = difftexts(texts['left'], texts['right'], texts.get('unified'))
-    return Response(dumps(diff), mimetype='application/json')
+    texts = json.loads(flask.request.get_data(as_text=True))
+    left = texts['left']
+    right = texts['right']
+    result = diff.difftexts(left, right, texts.get('unified'))
+    return flask.Response(json.dumps(result), mimetype='application/json')
