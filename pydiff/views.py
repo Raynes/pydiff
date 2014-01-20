@@ -22,7 +22,7 @@ def post_diff():
     return flask.Response(json.dumps(result), mimetype='application/json')
 
 
-@app.route('/help', methods=['GET'])
+@app.route('/', methods=['GET'])
 def get_help():
     """A GET endpoint that simply redirects to the
     Github README for pydiff.
