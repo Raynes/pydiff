@@ -1,3 +1,7 @@
+"""This module contains the difftexts function that does the
+actual diff on the strings.
+
+"""
 import os
 import tempfile
 from sh import diff
