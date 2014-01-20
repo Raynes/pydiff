@@ -20,3 +20,13 @@ def post_diff():
     right = texts['right']
     result = diff.difftexts(left, right, texts.get('unified'))
     return flask.Response(json.dumps(result), mimetype='application/json')
+
+
+@app.route('/help', methods=['GET'])
+def get_help():
+    """A GET endpoint that simply redirects to the
+    Github README for pydiff.
+
+    """
+    url = 'https://github.com/Raynes/pydiff/blob/master/README.md'
+    return flask.redirect(url)
