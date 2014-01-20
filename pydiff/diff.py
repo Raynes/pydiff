@@ -2,36 +2,34 @@
 actual diff on the strings.
 
 """
-import os
-import tempfile
-from sh import diff
+import difflib
 
 
-def difftexts(left, right, unified):
-    """Run diff on two temporary files filled with left and right
-    respectively. If the files are both the same, returns a dict
-    with key 'same' bound to True. Otherwise 'same' is bound to
-    False and 'output' is bound to the output of the diff command
+def rundiff(left, right, f):
+    """Higher order function for doing the tedious
+    work around turning a diff into something useful
+    as a response. Takes two strings and a function
+    that takes at least two arguments (the strings)
+    and returns an iterable that produces strings.
+
+    If the diffing function produces no output, the
+    resulting diff will have 'same' set to True.
+    Otherwise it'll be false and 'output' will be
+    joined output of the diffing function.
 
     """
-    leftf, leftfs = tempfile.mkstemp()
-    rightf, rightfs = tempfile.mkstemp()
-    try:
-        os.write(leftf, left.encode('utf-8'))
-        os.write(rightf, right.encode('utf-8'))
-        diffed = ''
-        if unified == 'true':
-            diffed = diff("-u", leftfs, rightfs, _ok_code=[0, 1, 2]).stdout
-        else:
-            diffed = diff(leftfs, rightfs, _ok_code=[0, 1, 2]).stdout
-        output = diffed.decode('utf-8')
-        if diffed:
-            return {'same': False,
-                    'output': output}
-        else:
-            return {'same': True}
-    finally:
-        os.close(leftf)
-        os.close(rightf)
-        os.remove(leftfs)
-        os.remove(rightfs)
+    diffed = ''.join(f(left, right))
+    if diffed:
+        return {'same': False, 'output': diffed}
+    else:
+        return {'same': True}
+
+
+def difftexts(left, right, kind):
+    """Run a unified or context diff on two strings."""
+    if kind == 'unified':
+        return rundiff(left, right, difflib.unified_diff)
+    elif kind == 'context':
+        return rundiff(left, right, difflib.context_diff)
+    else:
+        return {'error': 'Unsupported "kind"'}
